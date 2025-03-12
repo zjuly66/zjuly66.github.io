@@ -1,64 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <title>上传 Word 生成博文</title>
-  <!-- 引入必要的库 -->
-  <script src="https://unpkg.com/mammoth@1.4.8/mammoth.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.1/dist/turndown.min.js"></script>
+    <meta charset="UTF-8">
+    <title>zjuly的个人博客</title>
+    <style>
+        .pdf-container {
+            width: 100%;
+            height: 90vh;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-  <h1>上传 Word 文档生成博文</h1>
-  
-  <input type="file" id="wordFile" accept=".docx">
-  <button onclick="uploadFile()">提交生成</button>
-  <div id="status"></div>
-
-  <script>
-    async function uploadFile() {
-      const file = document.getElementById('wordFile').files[0];
-      if (!file) return alert('请选择文件');
-
-      // Step 1: 转换 Word 为 HTML
-      const arrayBuffer = await file.arrayBuffer();
-      const result = await mammoth.convertToHtml({ arrayBuffer });
-      const htmlContent = result.value;
-
-      // Step 2: HTML 转 Markdown
-      const turndownService = new TurndownService();
-      const markdownContent = turndownService.turndown(htmlContent);
-
-      // Step 3: 生成 Front Matter
-      const frontMatter = `---
-title: "${file.name.replace('.docx', '')}"
-date: ${new Date().toISOString()}
----
-      `;
-
-      const fullContent = frontMatter + '\n' + markdownContent;
-
-      // Step 4: 提交到 GitHub
-      const githubToken = prompt('请输入你的 GitHub Token:'); // 实际项目中建议用更安全的方式
-      const repo = '你的用户名/你的仓库名'; // 例如 "yourname/yourname.github.io"
-      const path = `_posts/${new Date().toISOString().split('T')[0]}-${file.name.replace('.docx', '.md')}`;
-
-      const response = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${githubToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: 'Add new post via Word upload',
-          content: btoa(unescape(encodeURIComponent(fullContent)))
-        })
-      });
-
-      if (response.ok) {
-        document.getElementById('status').innerHTML = '提交成功！稍等片刻后刷新网站即可看到新文章。';
-      } else {
-        document.getElementById('status').innerHTML = '提交失败，请检查 Token 或网络。';
-      }
-    }
-  </script>
+    <h1>实验报告</h1>
+    <object class="pdf-container" data="实验3.pdf" type="application/pdf">
+        <!-- 备选内容 -->
+        <div style="padding: 20px;">
+            <p>😞 你的浏览器不支持直接显示PDF文件，请选择以下方式：</p>
+            <ul>
+                <li><a href="your-file.pdf" download>下载PDF文件</a></li>
+                <li>使用现代浏览器打开（如Chrome、Firefox、Edge等）</li>
+            </ul>
+        </div>
+    </object>
 </body>
 </html>
