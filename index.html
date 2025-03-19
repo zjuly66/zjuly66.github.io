@@ -4,24 +4,130 @@
     <meta charset="UTF-8">
     <title>zjuly的个人博客</title>
     <style>
+        /* 新增文件列表样式 */
+        .file-list {
+            width: 300px;
+            float: left;
+            margin-right: 20px;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .file-item {
+            padding: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-item:hover {
+            background: #e0e0e0;
+        }
+
+        .file-item.active {
+            background: #007bff;
+            color: white;
+        }
+
         .pdf-container {
-            width: 100%;
+            width: calc(100% - 350px);
             height: 90vh;
             margin: 20px auto;
             border: 1px solid #ccc;
+            float: left;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .file-list, .pdf-container {
+                width: 100%;
+                float: none;
+                margin-right: 0;
+            }
         }
     </style>
 </head>
 <body>
     <h1>实验报告</h1>
-    <object class="pdf-container" data="aa.pdf" type="application/pdf">
+    
+    <!-- 新增文件列表容器 -->
+    <div class="file-list">
+        <h3>文件列表</h3>
+        <div id="fileList"></div>
+    </div>
+
+    <!-- PDF展示容器 -->
+    <object class="pdf-container" id="pdfViewer" data="aa.pdf" type="application/pdf">
         <div style="padding: 20px;">
             <p>😞 你的浏览器不支持直接显示PDF文件，请选择以下方式：</p>
             <ul>
-                <li><a href="your-file.pdf" download>下载PDF文件</a></li>
+                <li><a href="aa.pdf" download>下载PDF文件</a></li>
                 <li>使用现代浏览器打开（如Chrome、Firefox、Edge等）</li>
             </ul>
         </div>
     </object>
+
+    <div class="clearfix"></div>
+
+    <script>
+        // 文件列表数据（示例数据，实际使用时可以通过接口动态获取）
+        const files = [
+            { name: 'aa.pdf', title: '实验报告一' },
+            { name: 'bb.pdf', title: '实验报告二' },
+            { name: 'cc.pdf', title: '期末报告' }
+        ];
+
+        // 初始化文件列表
+        function initFileList() {
+            const container = document.getElementById('fileList');
+            container.innerHTML = files.map(file => `
+                <div class="file-item" 
+                     onclick="loadPDF('${file.name}', this)"
+                     title="${file.title}">
+                    ${file.name}
+                </div>
+            `).join('');
+
+            // 默认选中第一个
+            if(files.length > 0) {
+                loadPDF(files[0].name, container.firstElementChild);
+            }
+        }
+
+        // 加载PDF文件
+        function loadPDF(filename, element) {
+            // 更新PDF展示
+            const viewer = document.getElementById('pdfViewer');
+            viewer.data = filename;
+            
+            // 更新下载链接
+            viewer.querySelector('a').href = filename;
+
+            // 切换选中状态
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // 更新页面标题
+            const title = files.find(f => f.name === filename)?.title;
+            document.querySelector('h1').textContent = title || '实验报告';
+        }
+
+        // 初始化
+        initFileList();
+
+        // 可选：定时刷新文件列表（需要后端支持）
+        // setInterval(fetchFileList, 5000);
+    </script>
 </body>
 </html>
