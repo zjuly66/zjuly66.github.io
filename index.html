@@ -57,11 +57,11 @@
     </style>
 </head>
 <body>
-    <h1>实验报告</h1>
+    <h1>zcy的博客</h1>
     
     <!-- 新增文件列表容器 -->
     <div class="file-list">
-        <h3>文件列表</h3>
+        <h3>实验报告</h3>
         <div id="fileList"></div>
     </div>
 
@@ -82,8 +82,6 @@
         // 文件列表数据（示例数据，实际使用时可以通过接口动态获取）
         const files = [
             { name: 'aa.pdf', title: '实验报告一' },
-            { name: 'bb.pdf', title: '实验报告二' },
-            { name: 'cc.pdf', title: '期末报告' }
         ];
 
         // 初始化文件列表
@@ -117,17 +115,10 @@
                 item.classList.remove('active');
             });
             element.classList.add('active');
-
-            // 更新页面标题
-            const title = files.find(f => f.name === filename)?.title;
-            document.querySelector('h1').textContent = title || '实验报告';
         }
 
         // 初始化
         initFileList();
-
-        // 可选：定时刷新文件列表（需要后端支持）
-        // setInterval(fetchFileList, 5000);
     </script>
 </body>
 </html>
